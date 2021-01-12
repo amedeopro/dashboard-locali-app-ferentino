@@ -1,25 +1,32 @@
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  state = {
+    locali: []
+  }
+
+componentDidMount(){
+  axios.get('http://localhost:8080/feed/posts/')
+  .then(res => {
+    const locali = res.data.locali;
+    this.setState({locali});
+    console.log(locali);
+  })
+}
+
+  render() {
+    return(
+      <div className="App">
+        <h1>Lista Locali Attivi</h1>
+        <ul style={{listStyle: "none"}}>
+        { this.state.locali.map(locale => <li>{locale.nomeLocale}</li>)}
+      </ul>
+      </div>
+    );
+  }
 }
 
 export default App;
