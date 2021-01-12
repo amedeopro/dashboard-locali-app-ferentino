@@ -8,18 +8,51 @@ class App extends React.Component {
     locali: []
   }
 
-componentDidMount(){
-  axios.get('http://localhost:8080/feed/posts/')
-  .then(res => {
-    const locali = res.data.locali;
-    this.setState({locali});
-    console.log(locali);
-  })
-}
+  componentDidMount(){
+    axios.get('http://localhost:8080/feed/posts/')
+    .then(res => {
+      const locali = res.data.locali;
+      this.setState({locali});
+      console.log(locali);
+    })
+  }
 
   render() {
     return(
       <div className="App">
+        <div className="container">
+          <div className="row">
+                <div className="col-lg-6 mb-3">
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Nome locale</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="es. Pizzeria da ..."></input>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Indirizzo</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="ex. Via Casilina ..."></input>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Latitudine</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="es. 144.123456"></input>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Link Immagine</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="es. https://www.test.com/img.jpeg"></input>
+                </div>
+                <div className="col-lg-6 mb-3">
+                  <label htmlFor="exampleFormControlTextarea1" className="form-label">Tipologia di locale</label>
+                  <select className="form-control" name="" id="">
+                    <option value="">Pizzeria</option>
+                    <option value="">Ristorante</option>
+                    <option value="">Pub</option>
+                    <option value="">Cocktail Bar</option>
+                  </select>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Numero di Telefono</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="es. 0775123456"></input>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Longitudine</label>
+                  <input type="text" className="form-control" id="exampleFormControlInput1"
+                         placeholder="ex -122.987654"></input>
+                </div>
+          </div>
+        </div>
         <div className="container">
           <div className="row">
             <div className="col-lg-12 mt-5 mb-3">
@@ -40,9 +73,6 @@ componentDidMount(){
                       <p><small>{locale.indirizzo}</small></p>
                     </div>
                   </div>)}
-              {/*<ul>*/}
-              {/*  { this.state.locali.map(locale => <li><div className="immagineLocale" style={{backgroundImage : `url(${locale.imgurl})`}}></div><p>{locale.nomeLocale}</p><div>{locale.indirizzo}</div></li>)}*/}
-              {/*</ul>*/}
             </div>
             <div className="col-lg-6 col-xs-12">
                 <button className="btn btn-primary mr-2">Inserisci un nuovo Locale</button>
