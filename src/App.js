@@ -1,11 +1,12 @@
 import axios from 'axios';
 import './App.css';
-import React from 'react';
+import React, { Component } from 'react';
 
 class App extends React.Component {
 
   state = {
-    locali: []
+    locali: [],
+      visualizzaInserimento: false
   }
 
   componentDidMount(){
@@ -17,10 +18,24 @@ class App extends React.Component {
     })
   }
 
+  toggleiewInsert = () => {
+
+      const visualizza = this.state.visualizzaInserimento
+
+      this.setState({
+          visualizzaInserimento: !visualizza
+      })
+}
+
+
+
+
   render() {
-    return(
+      return(
       <div className="App">
-        <div className="container">
+
+          {this.state.visualizzaInserimento &&
+        <div className="container mt-5">
           <div className="row">
                 <div className="col-lg-6 mb-3">
                   <label htmlFor="exampleFormControlInput1" className="form-label">Nome locale</label>
@@ -52,7 +67,7 @@ class App extends React.Component {
                          placeholder="ex -122.987654"></input>
                 </div>
           </div>
-        </div>
+        </div> }
         <div className="container">
           <div className="row">
             <div className="col-lg-12 mt-5 mb-3">
@@ -66,7 +81,7 @@ class App extends React.Component {
               { this.state.locali.map(locale =>
                   <div className="row mb-3 mt-3">
                     <div className="col-lg-3">
-                      <div className="immagineLocale" style={{backgroundImage : `url(${locale.imgurl})`}}></div>
+                      <div className="immagineLocale" style={{backgroundImage : `url('http://localhost:8080/${locale.imgurl}`}}></div>
                     </div>
                     <div className="col-lg-9 d-flex flex-column justify-content-center text-left">
                       <p className="font-weight-bold">{locale.nomeLocale}</p>
@@ -75,7 +90,7 @@ class App extends React.Component {
                   </div>)}
             </div>
             <div className="col-lg-6 col-xs-12">
-                <button className="btn btn-primary mr-2">Inserisci un nuovo Locale</button>
+                <button className="btn btn-primary mr-2" onClick={this.toggleiewInsert}>Inserisci un nuovo Locale</button>
                 <button className="btn btn-primary mr-2">Modifica un Locale</button>
                 <button className="btn btn-primary mr-2">Elimina un Locale</button>
                 <button className="btn btn-primary mt-3">Aggiorna Lista</button>
