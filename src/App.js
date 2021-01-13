@@ -66,6 +66,9 @@ class App extends React.Component {
                   <input type="text" className="form-control" id="exampleFormControlInput1"
                          placeholder="ex -122.987654"></input>
                 </div>
+              <div className="col-lg-12">
+                  <button className="btn btn-primary form-control">INSERISCI</button>
+              </div>
           </div>
         </div> }
         <div className="container">
