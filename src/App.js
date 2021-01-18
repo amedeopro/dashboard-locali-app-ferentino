@@ -1,87 +1,179 @@
 import axios from 'axios';
 import './App.css';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Formik, Form } from 'formik';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from '@material-ui/core/MenuItem';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 
-class App extends React.Component {
+function App() {
 
-  state = {
-    locali: [],
-      visualizzaInserimento: false
-  }
+    const [locali, setLocali] = useState([]);
+    const [visualizzaInserimento, setVisualizzaInserimento] = useState(false);
 
-  componentDidMount(){
-    axios.get('http://localhost:8080/feed/posts/')
-    .then(res => {
-      const locali = res.data.locali;
-      this.setState({locali});
-      console.log(locali);
-    })
-  }
+    useEffect(() => {
+            getLocali();
+    }, []);
 
-  toggleiewInsert = () => {
+    function getLocali(){
+        axios.get('http://localhost:8080/feed/posts/')
+            .then(res => {
+                const localiData = res.data.locali;
+                setLocali({localiData});
+            })
+    }
 
-      const visualizza = this.state.visualizzaInserimento
-
-      this.setState({
-          visualizzaInserimento: !visualizza
-      })
-}
-
-
-
-
-  render() {
       return(
       <div className="App">
 
-          {this.state.visualizzaInserimento &&
-        <div className="container mt-5">
-          <div className="row">
-                <div className="col-lg-6 mb-3">
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Nome locale</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="es. Pizzeria da ..."></input>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Indirizzo</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="ex. Via Casilina ..."></input>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Latitudine</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="es. 144.123456"></input>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Link Immagine</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="es. https://www.test.com/img.jpeg"></input>
-                </div>
-                <div className="col-lg-6 mb-3">
-                  <label htmlFor="exampleFormControlTextarea1" className="form-label">Tipologia di locale</label>
-                  <select className="form-control" name="" id="">
-                    <option value="">Pizzeria</option>
-                    <option value="">Ristorante</option>
-                    <option value="">Pub</option>
-                    <option value="">Cocktail Bar</option>
-                  </select>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Numero di Telefono</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="es. 0775123456"></input>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Longitudine</label>
-                  <input type="text" className="form-control" id="exampleFormControlInput1"
-                         placeholder="ex -122.987654"></input>
-                </div>
-              <div className="col-lg-12">
-                  <button className="btn btn-primary form-control">INSERISCI</button>
-              </div>
-          </div>
-        </div> }
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 mt-5 mb-3">
+          {visualizzaInserimento &&
+          <Container>
+              <Formik
+                  initialValues={{
+                      nomeLocale:'',
+                      tipologia: '',
+                      indirizzo: '',
+                      tel: '',
+                      imgurl: '',
+                      lat: 0,
+                      long: 0
+                  }}
+                  // validate={values => {
+                  //     const errors = {};
+                  //     if (!values.email) {
+                  //         errors.email = 'Required';
+                  //     } else if (
+                  //         !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                  //     ) {
+                  //         errors.email = 'Invalid email address';
+                  //     }
+                  //     return errors;
+                  // }}
+                  onSubmit={async (values) => {
+                      axios.post('http://localhost:8080/feed/post/', values)
+                          .then(res =>{
+                              console.log(res);
+                              getLocali();
+;                          })
+                  }}
+              >
+                  {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        /* and other goodies */
+                    }) => (
+              <Form onSubmit={handleSubmit} >
+
+                  <TextField
+                      label="Nome del locale"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="nomeLocale"
+                      name="nomeLocale"
+                      placeholder="Nome del locale"
+                      value={values.nomeLocale}
+                      onChange={handleChange}
+                      helperText="Es. Pizzeria da ..."
+                  ></TextField>
+
+                  <TextField
+                      label="Indirizzo"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="indirizzo"
+                      name="indirizzo"
+                      placeholder="ex. Via Casilina ..."
+                      value={values.indirizzo}
+                      onChange={handleChange}></TextField>
+
+                  <TextField
+                      label="Url dell'Immagine"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="imgurl"
+                      name="imgurl"
+                      placeholder="es. https://www.test.com/img.jpeg"
+                      value={values.imgurl}
+                      onChange={handleChange}></TextField>
+
+
+                  <Select
+                      label="Tipologia di attività"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      name="tipologia"
+                      id="tipologia"
+                      value={values.tipologia}
+                      onChange={handleChange}>
+                    <MenuItem value="Pizzeria">Pizzeria</MenuItem>
+                    <MenuItem value="Ristorante">Ristorante</MenuItem>
+                    <MenuItem value="Pub">Pub</MenuItem>
+                    <MenuItem value="Cocktail Bar">Cocktail Bar</MenuItem>
+                  </Select>
+
+                  <TextField
+                      label="Numero di telefono"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="tel"
+                      name="tel"
+                      placeholder="es. 0775123456"
+                      value={values.tel}
+                      onChange={handleChange}></TextField>
+
+                  <TextField
+                      label="Latitudine"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="lat"
+                      name="lat"
+                      placeholder="es. 144.123456"
+                      value={values.lat}
+                      onChange={handleChange}></TextField>
+
+                  <TextField
+                      label="Longitudine"
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      type="text"
+                      id="long"
+                      name="long"
+                      placeholder="ex -122.987654"
+                      value={values.long}
+                      onChange={handleChange}></TextField>
+
+                  <Button color="primary" variant="contained" fullWidth type="submit">INSERISCI</Button>
+
+              </Form>
+                      )}
+              </Formik>
+
+          </Container>
+          }
               <h1>Gestione Locali APP Ferentino</h1>
-            </div>
-          </div>
-        </div>
-        <div className="container">
-          <div className="row d-flex justify-content-between">
-            <div className="col-lg-6 col-xs-12 box">
-              { this.state.locali.map(locale =>
+        <Grid container>
+          <Grid item xs={6}>
+              { Array.isArray(locali.localiData) &&  locali.localiData.map(locale =>
                   <div className="row mb-3 mt-3">
                     <div className="col-lg-3">
                       <div className="immagineLocale" style={{backgroundImage : `url('http://localhost:8080/${locale.imgurl}`}}></div>
@@ -91,18 +183,45 @@ class App extends React.Component {
                       <p><small>{locale.indirizzo}</small></p>
                     </div>
                   </div>)}
-            </div>
-            <div className="col-lg-6 col-xs-12">
-                <button className="btn btn-primary mr-2" onClick={this.toggleiewInsert}>Inserisci un nuovo Locale</button>
-                <button className="btn btn-primary mr-2">Modifica un Locale</button>
-                <button className="btn btn-primary mr-2">Elimina un Locale</button>
-                <button className="btn btn-primary mt-3">Aggiorna Lista</button>
-            </div>
-          </div>
-        </div>
+          </Grid>
+          <Grid item xs={12}>
+              <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+              >
+                <Button color="primary" variant="contained" onClick={() => setVisualizzaInserimento(!visualizzaInserimento)}>Inserisci un nuovo Locale</Button>
+              </Grid>
+              <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+              >
+                <Button color="primary" variant="contained">Modifica un Locale</Button>
+              </Grid>
+              <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+              >
+                <Button color="primary" variant="contained">Elimina un Locale</Button>
+              </Grid>
+              <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+              >
+                <Button color="primary" variant="contained">Aggiorna Lista</Button>
+              </Grid>
+        </Grid>
+          </Grid>
       </div>
     );
-  }
+
 }
 
 export default App;
