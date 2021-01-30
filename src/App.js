@@ -1,6 +1,6 @@
 import axios from 'axios';
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Component } from 'react';
 import { Formik, Form } from 'formik';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Box from "@material-ui/core/Box";
+import ListaLocali from "./components/list";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             .then(res => {
                 const localiData = res.data.locali;
                 setLocali({localiData});
+                console.log(localiData);
             })
     }
 
@@ -31,18 +33,12 @@ function App() {
       <div className="App">
 
               <h1>Gestione Locali APP Ferentino</h1>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
+        <Grid container>
+          <Grid item xs={6} style={{paddingLeft: "100px"}}>
+              <ListaLocali array={locali.localiData}/>
               { Array.isArray(locali.localiData) &&  locali.localiData.map(locale =>
-                  <div className="row mb-3 mt-3">
-                    <div className="col-lg-3">
-                      <div className="immagineLocale" style={{backgroundImage : `url('http://localhost:8080/${locale.imgurl}`}}></div>
-                    </div>
-                    <div className="col-lg-9 d-flex flex-column justify-content-center text-left">
-                      <p className="font-weight-bold">{locale.nomeLocale}</p>
-                      <p><small>{locale.indirizzo}</small></p>
-                    </div>
-                  </div>)}
+                  <ListaLocali tel={locale.tel} imgurl={locale.imgurl} nomeLocale={locale.nomeLocale} indirizzo={locale.indirizzo}/>
+              )}
           </Grid>
 <Grid item xs={6}>
             <Box component="span" m={1}>
